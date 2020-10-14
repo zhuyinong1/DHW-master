@@ -12,7 +12,7 @@ from model import get_model
 from transforms import get_transform
 import torch.nn.functional as F
 from NDFDML import nd,nd_loss
-from tensorboardX import SummaryWriter
+
 
 
 from losses.get_loss import  get_loss
@@ -39,7 +39,6 @@ class Trainer:
         self.inter_test = args.intertest
         self.cm = args.cm
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.writer = SummaryWriter()
         self.n_class = args.batch_size // args.instances
         self.classes = args.classes
         self.pretrained = args.pretrained
@@ -96,9 +95,9 @@ class Trainer:
             lr=self.lr_init, momentum=0.9
         )
 
-        #self.scheduler = lr_scheduler.MultiStepLR(optimizer_c,milestones=[2000, 4000, 6000, 8000, 12000, 16000],gamma=0.5)
+
         self.scheduler = lr_scheduler.StepLR(optimizer_c, step_size=4000, gamma=0.9)
-        #self.scheduler = lr_scheduler.MultiStepLR(optimizer_c,milestones=[2000, 4000, 6000, 8000, 9000, 10000, 12000, 13000, 14000, 16000],gamma=0.5)
+
 
 
     @staticmethod
@@ -227,7 +226,6 @@ class Trainer:
 
         time_elapsed = time.time() - since
         print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
-        self.writer.close()
         return self.ndmodel
 
     
